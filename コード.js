@@ -173,7 +173,7 @@ function format_date(date){
 const postReplyMessage=(message, replyToken)=>{
   // 応答メッセージ用のAPI URL
   const url = 'https://api.line.me/v2/bot/message/reply';
-  const TOKEN = '1xP9We56vepvT/ZwnByZYYJx6KwJES/XdCq4n208ziXv/kOhVgT5alQmGPkLIIKceFaQ287Op7L4xb4XGIotSwJ1wvMTu/lPElnsO2fRGZJIsE4vYs5UcNRg1pSZOAK3aGHBsTS7B+87nPiCK38Q3wdB04t89/1O/w1cDnyilFU=';
+  const TOKEN = "";
   UrlFetchApp.fetch(url, {
     'headers': {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -195,7 +195,7 @@ const postMessage = (msg) => {
   // 個人チャット
   // const targetId = 'Ue8d8652379d98fb101ec89c6110331aa';
   // LINE developersのメッセージ送受信設定に記載のアクセストークン
-  const TOKEN = '1xP9We56vepvT/ZwnByZYYJx6KwJES/XdCq4n208ziXv/kOhVgT5alQmGPkLIIKceFaQ287Op7L4xb4XGIotSwJ1wvMTu/lPElnsO2fRGZJIsE4vYs5UcNRg1pSZOAK3aGHBsTS7B+87nPiCK38Q3wdB04t89/1O/w1cDnyilFU=';
+  const TOKEN = "";
 
   const response =
   UrlFetchApp.fetch(url, {
