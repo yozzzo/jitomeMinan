@@ -1,0 +1,62 @@
+# ログファイル
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ランタイムデータ
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ビルドディレクトリ
+build/
+
+# node_modulesディレクトリ
+node_modules/
+
+# デバッグファイル
+.nyc_output
+coverage/
+
+# 環境変数ファイル
+.env
+.env.test
+.env.production
+
+# ローカル設定ファイル
+config/local-*.json
+config/local-*.yaml
+config/local-*.yml
+config/local-*.js
+
+# IDE/エディタの設定ファイル
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.tmproj
+*.sublime*
+
+# OS生成ファイル
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+
+# Yarn エラーログ
+.yarn-error.log
+
+# npm キャッシュファイル
+.npm
+.yarn-cache
+
+# テスト結果出力フォルダ
+test-results/
+
+# TypeScript のビルドアウトプット
+dist/
+
+# 必要に応じて追加の無視ルールを追加してください。

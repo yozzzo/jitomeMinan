@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "ES5",
+      "module": "commonjs",
+      "lib": ["esnext"],
+      "strict": true,
+      "esModuleInterop": true
+    },
+    "include": [
+      "./**/*"
+    ]
+}

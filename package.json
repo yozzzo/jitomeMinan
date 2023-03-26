@@ -1,0 +1,23 @@
+{
+  "name": "jitomeminan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yozzzo/jitomeMinan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yozzzo/jitomeMinan/issues"
+  },
+  "homepage": "https://github.com/yozzzo/jitomeMinan#readme",
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.59"
+  }
+}
