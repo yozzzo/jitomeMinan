@@ -199,7 +199,7 @@ function format_date(date: Date) {
 const postReplyMessage = (message: ReplyMessage[], replyToken: any) => {
   // 応答メッセージ用のAPI URL
   const url = "https://api.line.me/v2/bot/message/reply";
-  const TOKEN = PropertiesService.getScriptProperties().getProperty("LINE_ACCSESS_TOKEN");
+  const TOKEN = PropertiesService.getScriptProperties().getProperty("LINE_ACCESS_TOKEN");
   UrlFetchApp.fetch(url, {
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
@@ -217,11 +217,11 @@ const postMessage = (msg: { type: string; text: string }[]) => {
   // messaging api のurl
   const url = "https://api.line.me/v2/bot/message/push";
   // 対象グループのID
-  // const targetId = "C066bb7d1e9f375625cff0d5f0afd9c5c";
+  const targetId = "C066bb7d1e9f375625cff0d5f0afd9c5c";
   // 個人チャット
-  const targetId = 'Ue8d8652379d98fb101ec89c6110331aa';
+  // const targetId = 'Ue8d8652379d98fb101ec89c6110331aa';
   // LINE developersのメッセージ送受信設定に記載のアクセストークン
-  const TOKEN = PropertiesService.getScriptProperties().getProperty("LINE_ACCSESS_TOKEN");
+  const TOKEN = PropertiesService.getScriptProperties().getProperty("LINE_ACCESS_TOKEN");
 
   const response = UrlFetchApp.fetch(url, {
     headers: {
