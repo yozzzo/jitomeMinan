@@ -257,3 +257,21 @@ const endOfWeeklyRemind = () => {
   postMessage(messages);
   console.log(messages);
 };
+
+// テスト可能にするため全ての関数をexport
+export {
+  doPost,
+  beginningWeeklyRemind,
+  endOfWeeklyRemind,
+  getMondayDateInThisWeek,
+  getPostAuthor,
+  createQuickReplyMsg,
+  postMessage,
+  postReplyMessage,
+  makeReplyMessage,
+  imageMessage,
+  createImgUrl,
+  dateFormat,
+  format_date,
+};
+
