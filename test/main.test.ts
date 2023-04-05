@@ -1,16 +1,12 @@
-import {
-    createImgUrl,
-    createQuickReplyMsg,
-    dateFormat,
-    getPostAuthor,
-    imageMessage,
-    makeReplyMessage,
-  } from "../コード";
+import {Main} from '../Main';
+import {Line} from '../Line';
+const line = new Line();
+const main = new Main(line);
   
   describe("createImgUrl", () => {
     it("should return an image URL based on replyType", () => {
-      const positiveUrl = createImgUrl("positive");
-      const negativeUrl = createImgUrl("negative");
+      const positiveUrl = main.createImgUrl("positive");
+      const negativeUrl = main.createImgUrl("negative");
   
       expect(positiveUrl.startsWith("https://drive.google.com/uc?id=")).toBe(true);
       expect(negativeUrl.startsWith("https://drive.google.com/uc?id=")).toBe(true);
@@ -20,7 +16,7 @@ import {
   describe("createQuickReplyMsg", () => {
     it("should return a quick reply message with the post author's name", () => {
       const postAuthor = "John Doe";
-      const result = createQuickReplyMsg(postAuthor);
+      const result = main.createQuickReplyMsg(postAuthor);
   
       expect(result[0].text).toContain(postAuthor);
     });
@@ -42,8 +38,8 @@ import {
   
   describe("imageMessage", () => {
     it("should return an array with an image message based on replyType", () => {
-      const positiveResult = imageMessage("positive");
-      const negativeResult = imageMessage("negative");
+      const positiveResult = main.imageMessage("positive");
+      const negativeResult = main.imageMessage("negative");
   
       expect(positiveResult[0].type).toEqual("image");
       expect(negativeResult[0].type).toEqual("image");
@@ -52,8 +48,8 @@ import {
   
   describe("makeReplyMessage", () => {
     it("should return an array with a text message based on replyType", () => {
-      const positiveResult = makeReplyMessage("positive");
-      const negativeResult = makeReplyMessage("negative");
+      const positiveResult = main.makeReplyMessage("positive");
+      const negativeResult = main.makeReplyMessage("negative");
   
       expect(positiveResult[0].type).toEqual("text");
       expect(negativeResult[0].type).toEqual("text");
@@ -61,3 +57,4 @@ import {
       expect(negativeResult[0].text).toContain("そういうこともあるナン");
     });
   });
+  
