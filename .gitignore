@@ -25,6 +25,7 @@ coverage/
 .env
 .env.test
 .env.production
+Constant.ts
 
 # ローカル設定ファイル
 config/local-*.json
