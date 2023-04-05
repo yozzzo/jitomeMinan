@@ -1,18 +1,16 @@
-import { Env } from "./Env";
 import { Line } from "./Line";
 import { Main } from "./Main";
 
 const beginningWeeklyRemind = () => {
-
-  const main = new Main();
   const line = new Line();
+  const main = new Main(line);
 
-  main.endOfWeeklyRemind(line);
+  main.beginningWeeklyRemind();
 };
 
 const endOfWeeklyRemind = () => {
-  const main = new Main();
   const line = new Line();
+  const main = new Main(line);
 
-  main.endOfWeeklyRemind(line);
+  main.endOfWeeklyRemind();
 };

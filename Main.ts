@@ -1,4 +1,4 @@
-import { Env } from "./Env";
+import { Constant } from "./Constant";
 import { Line } from "./Line";
 
 type QuickReplyMessage = {
@@ -35,15 +35,16 @@ type TextMessage = {
 
 type ReplyMessage = TextMessage | ImageMessage;
 
-export class Main {
-    constructor() {
-        const line = new Line();
-    }
 
+
+export class Main {
+    line: Line;    
+    constructor(line:Line) {
+        this.line = line;
+    }
 
     createQuickReplyMsg = (postAuthor: string): QuickReplyMessage[] => {
         // コンストラクタで宣言したlineのインスタンスを使う
-        const line = new Line();
         const message: QuickReplyMessage[] = [
             {
                 type: "text",
@@ -85,7 +86,7 @@ export class Main {
 
         console.log(targetDate);
         const col = 1;
-        const sheet = SpreadsheetApp.openById(Env.SHEET_ID).getSheetByName("シート1");
+        const sheet = SpreadsheetApp.openById(Constant.SHEET_ID).getSheetByName(Constant.SHEET_NAME);
 
         // sheetがnullの場合はエラーを返す
         if (sheet === null) {
@@ -142,8 +143,6 @@ export class Main {
         return imgUrl;
     };
 
-
-
     imageMessage = (replyType: string): ImageMessage[] => {
         const imgUrl: string = this.createImgUrl(replyType);
         const message: ImageMessage[] = [
@@ -183,7 +182,7 @@ export class Main {
         message = message.concat(this.imageMessage(replyType));
         message = message.concat(this.makeReplyMessage(replyType));
         console.log(message);
-        this.postReplyMessage(message, replyToken);
+        this.line.postReplyMessage(message, replyToken);
     }
 
     getMondayDateInThisWeek = () => {
@@ -200,24 +199,9 @@ export class Main {
         return Utilities.formatDate(date, "Asia/Tokyo", "MM/dd");
     }
 
-    postReplyMessage = (message: ReplyMessage[], replyToken: any) => {
-        // 応答メッセージ用のAPI URL
-        const url = "https://api.line.me/v2/bot/message/reply";
-        const TOKEN = PropertiesService.getScriptProperties().getProperty("LINE_ACCESS_TOKEN");
-        UrlFetchApp.fetch(url, {
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8",
-                Authorization: "Bearer " + TOKEN,
-            },
-            method: "post",
-            payload: JSON.stringify({
-                replyToken: replyToken,
-                messages: message,
-            }),
-        });
-    };
 
-    beginningWeeklyRemind = (line:Line) => {
+
+    beginningWeeklyRemind = () => {
         const mondayDate = this.getMondayDateInThisWeek();
         const postAuthor = this.getPostAuthor(mondayDate);
         const message = [
@@ -226,15 +210,15 @@ export class Main {
                 text: "今週投稿するのは " + postAuthor + " ナン！よろしくナン！",
             },
         ];
-        line.postMessage(message);
+        this.line.postMessage(message);
         console.log(message);
     };
 
-    endOfWeeklyRemind = (line:Line) => {
+    endOfWeeklyRemind = () => {
         const mondayDate = this.getMondayDateInThisWeek();
         const postAuthor = this.getPostAuthor(mondayDate);
         var messages = this.createQuickReplyMsg(postAuthor);
-        line.postMessage(messages);
+        this.line.postMessage(messages);
         console.log(messages);
     };
 

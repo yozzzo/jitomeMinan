@@ -1,4 +1,18 @@
+import { Constant } from "./Constant";
 import { Env } from "./Env";
+
+type ImageMessage = {
+    type: string;
+    originalContentUrl: string;
+    previewImageUrl: string;
+};
+
+type TextMessage = {
+    type: string;
+    text: string;
+};
+
+type ReplyMessage = TextMessage | ImageMessage;
 
 export class Line {
     targetId: string;
@@ -8,27 +22,18 @@ export class Line {
     }
     
     postMessage = (msg: { type: string; text: string }[]) => {
-        // Keyクラスをインスタンス化
-        // messaging api のurl
-        const url = "https://api.line.me/v2/bot/message/push";
-        // 対象グループのID
-        const targetGroupId = "C066bb7d1e9f375625cff0d5f0afd9c5c";
 
         //デバッグモードならば、デバッグ用チャットに送信する
         if (Env.IS_DEBUG === true) {
-            this.targetId = Env.DEBUG_LINE_ID;
+            this.targetId = Constant.DEBUG_LINE_ID;
         } else {
-            this.targetId = Env.TARGET_ID;
+            this.targetId = Constant.TARGET_ID;
         }
 
-        // LINE developersのメッセージ送受信設定に記載のアクセストークン
-        const TOKEN =
-            PropertiesService.getScriptProperties().getProperty("LINE_ACCESS_TOKEN");
-
-        const response = UrlFetchApp.fetch(url, {
+        const response = UrlFetchApp.fetch(Constant.LINE_POST_URL, {
             headers: {
                 "Content-Type": "application/json; charset=UTF-8",
-                Authorization: "Bearer " + TOKEN,
+                Authorization: "Bearer " + Constant.LINE_ACCESS_TOKEN,
             },
             method: "post",
             payload: JSON.stringify({
@@ -37,5 +42,20 @@ export class Line {
             }),
         });
         return response.getResponseCode();
+    };
+
+    postReplyMessage = (message: ReplyMessage[], replyToken: any) => {
+        // 応答メッセージ用のAPI URL
+        UrlFetchApp.fetch(Constant.LINE_REPLY_URL, {
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+                Authorization: "Bearer " + Constant.LINE_ACCESS_TOKEN,
+            },
+            method: "post",
+            payload: JSON.stringify({
+                replyToken: replyToken,
+                messages: message,
+            }),
+        });
     };
 }
