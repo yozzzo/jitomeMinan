@@ -1,5 +1,6 @@
 import { Constant } from "./Constant";
 import { Line } from "./Line";
+import {Schedule} from "./Schedule";
 
 type QuickReplyMessage = {
     type: string;
@@ -35,12 +36,24 @@ type TextMessage = {
 
 type ReplyMessage = TextMessage | ImageMessage;
 
+type Schedules = {
+    postDay: string;
+    postAuthor: number;
+};
+
+type JsonSchedule = {
+    schedules: Schedules[];
+};
+
 
 
 export class Main {
-    line: Line;    
+    line: Line; 
+    constant: Constant;
+
     constructor(line:Line) {
         this.line = line;
+        this.constant = new Constant();
     }
 
     createQuickReplyMsg = (postAuthor: string): QuickReplyMessage[] => {
@@ -82,26 +95,22 @@ export class Main {
         return dateString;
     };
 
-    getPostAuthor = (targetDate: string): string => {
-
-        console.log(targetDate);
-        const col = 1;
-        const sheet = SpreadsheetApp.openById(Constant.SHEET_ID).getSheetByName(Constant.SHEET_NAME);
-
-        // sheetがnullの場合はエラーを返す
-        if (sheet === null) {
-            return "error";
-        }
-        // sheetのデータを二次元配列で取得
-        const dat = sheet.getDataRange().getValues();
-
-        for (let i = 1; i < dat.length; i++) {
-            const date = this.dateFormat(new Date(dat[i][col - 1]));
-            if (date === targetDate) {
-                return dat[i][col];
+    getPostAuthor = (targetDate: string) => {
+        const jsonData: JsonSchedule = Schedule.getJsonData();
+        let postAuthor = "";
+        jsonData.schedules.forEach((item: Schedules) => {
+            if (item.postDay === targetDate) {                
+                console.log("見つかった")
+                // Constant.authorOrderの中のindexがitem.postAuthorの値を取得する。
+                console.log(this.constant.AUTHOR_ORDER)
+                console.log(this.constant.AUTHOR_ORDER[0])
+                console.log(item.postAuthor)
+                console.log(this.constant.AUTHOR_ORDER[item.postAuthor])
+                // ループから抜ける
+                postAuthor = this.constant.AUTHOR_ORDER[item.postAuthor]
             }
-        }
-        return "error";
+        });
+        return postAuthor;
     };
 
     createImgUrl = (replyType: string): string => {
@@ -202,8 +211,8 @@ export class Main {
 
 
     beginningWeeklyRemind = () => {
-        const mondayDate = this.getMondayDateInThisWeek();
-        const postAuthor = this.getPostAuthor(mondayDate);
+        const mondayDate:string = this.getMondayDateInThisWeek();
+        const postAuthor:string = this.getPostAuthor(mondayDate);
         const message = [
             {
                 type: "text",
@@ -215,9 +224,9 @@ export class Main {
     };
 
     endOfWeeklyRemind = () => {
-        const mondayDate = this.getMondayDateInThisWeek();
-        const postAuthor = this.getPostAuthor(mondayDate);
-        var messages = this.createQuickReplyMsg(postAuthor);
+        const mondayDate:string = this.getMondayDateInThisWeek();
+        const postAuthor:string = this.getPostAuthor(mondayDate);
+        var messages:QuickReplyMessage[] = this.createQuickReplyMsg(postAuthor);
         this.line.postMessage(messages);
         console.log(messages);
     };

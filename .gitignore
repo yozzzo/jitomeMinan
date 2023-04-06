@@ -25,7 +25,6 @@ coverage/
 .env
 .env.test
 .env.production
-Constant.ts
 
 # ローカル設定ファイル
 config/local-*.json
@@ -61,3 +60,5 @@ test-results/
 dist/
 
 # 必要に応じて追加の無視ルールを追加してください。
+.vscode/
+Constant.ts

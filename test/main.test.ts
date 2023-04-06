@@ -32,8 +32,12 @@ const main = new Main(line);
 //   });
   
   describe("getPostAuthor", () => {
-    // このテストは、Google Apps Scriptの実行環境を持っていないため、ローカルで実行できません。
-    // Google Apps Scriptのプロジェクトに組み込んでテストする必要があります。
+    it("should return the post author's name based on the date", () => {
+      const targetDate:string = "2021-02-13";
+      const result = main.getPostAuthor(targetDate);
+  
+      expect(result).toEqual("testAuthor");
+    });
   });
   
   describe("imageMessage", () => {
