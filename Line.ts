@@ -9,7 +9,7 @@ type ImageMessage = {
 
 type TextMessage = {
     type: string;
-    text: string;
+    text: string | Promise<string>;
 };
 
 type ReplyMessage = TextMessage | ImageMessage;
@@ -22,14 +22,14 @@ export class Line {
         this.targetId = "";
         this.constant = new Constant();
     }
-    
+
     postMessage = (msg: { type: string; text: string }[]) => {
 
         //デバッグモードならば、デバッグ用チャットに送信する
         if (Env.IS_DEBUG === true) {
             this.targetId = this.constant.DEBUG_LINE_ID;
         } else {
-            this.targetId = this.constant.TARGET_LINE_ID;
+            this.targetId = this.constant.CORRECT_LINE_GROUP_ID;
         }
 
         const response = UrlFetchApp.fetch(this.constant.LINE_POST_URL, {

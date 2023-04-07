@@ -1,6 +1,7 @@
 import { Constant } from "./Constant";
+import { Gpt } from "./Gpt";
 import { Line } from "./Line";
-import {Schedule} from "./Schedule";
+import { Schedule } from "./Schedule";
 
 type QuickReplyMessage = {
     type: string;
@@ -31,7 +32,7 @@ type ImageMessage = {
 
 type TextMessage = {
     type: string;
-    text: string;
+    text: string | Promise<string>;
 };
 
 type ReplyMessage = TextMessage | ImageMessage;
@@ -48,12 +49,12 @@ type JsonSchedule = {
 
 
 export class Main {
-    line: Line; 
+    line: Line;
     constant: Constant;
 
-    constructor(line:Line) {
+    constructor(line: Line, constant: Constant) {
         this.line = line;
-        this.constant = new Constant();
+        this.constant = constant;
     }
 
     createQuickReplyMsg = (postAuthor: string): QuickReplyMessage[] => {
@@ -98,7 +99,7 @@ export class Main {
         const jsonData: JsonSchedule = Schedule.getJsonData();
         let postAuthor = "";
         jsonData.schedules.forEach((item: Schedules) => {
-            if (item.postDay === targetDate) {                
+            if (item.postDay === targetDate) {
                 postAuthor = this.constant.AUTHOR_ORDER[item.postAuthor]
             }
         });
@@ -172,10 +173,10 @@ export class Main {
         return msg;
     };
 
-    doPost = (e: any, line: Line) => {
+    postBack = (e: any, line: Line) => {
+        console.log("postBack");
         // WebHookで受信した応答用Token
         const replyToken = JSON.parse(e.postData.contents).events[0].replyToken;
-        const type = JSON.parse(e.postData.contents).events[0].type;
         const postBack = JSON.parse(e.postData.contents).events[0].postback.data;
         const replyType = postBack == "posted" ? "positive" : "negative";
         // imageMessageとmakeReplyMessageを型ごと統合
@@ -184,7 +185,7 @@ export class Main {
         message = message.concat(this.makeReplyMessage(replyType));
         console.log(message);
         this.line.postReplyMessage(message, replyToken);
-    }
+    };
 
     getMondayDateInThisWeek = () => {
         const target_date = new Date();
@@ -203,8 +204,8 @@ export class Main {
 
 
     beginningWeeklyRemind = () => {
-        const mondayDate:string = this.getMondayDateInThisWeek();
-        const postAuthor:string = this.getPostAuthor(mondayDate);
+        const mondayDate: string = this.getMondayDateInThisWeek();
+        const postAuthor: string = this.getPostAuthor(mondayDate);
         const message = [
             {
                 type: "text",
@@ -216,11 +217,47 @@ export class Main {
     };
 
     endOfWeeklyRemind = () => {
-        const mondayDate:string = this.getMondayDateInThisWeek();
-        const postAuthor:string = this.getPostAuthor(mondayDate);
-        var messages:QuickReplyMessage[] = this.createQuickReplyMsg(postAuthor);
+        const mondayDate: string = this.getMondayDateInThisWeek();
+        const postAuthor: string = this.getPostAuthor(mondayDate);
+        var messages: QuickReplyMessage[] = this.createQuickReplyMsg(postAuthor);
         this.line.postMessage(messages);
         console.log(messages);
+    };
+
+    talkToMinan = (groupId: string | null, userId: string, text: string, replyToken: string) => {
+        console.log("talkToMinan");
+        // マイナンのプロンプトを作成
+        const prompt = this.getMinanPrompt(groupId, userId, text);
+        console.log(prompt)
+
+        // openAiのapiを叩いて返信を取得
+        const gpt = new Gpt();
+        gpt.getReply(prompt, (reply: any) => {
+            //Line返信用に整形
+            const replyMessage: TextMessage[] = [
+                {
+                    type: "text",
+                    text: reply,
+                },
+            ];
+            this.line.postReplyMessage(replyMessage, replyToken);
+        });
+    };
+
+    getMinanPrompt = (groupId: string | null, userId: string, text: string) => {
+        let prompt = "";
+        prompt += "あなたは皮肉屋だけど何故か憎めないマイナンというキャラクターです。\n"
+        prompt += "語尾には必ず「ナン」をつけてください。\n"
+        prompt += "句点の後には2つの改行を含めて二行分のスペースがあるように見える文を作成してください。\n"
+        if (groupId == null) {
+            prompt += "あなたは" + userId + "さんと会話しています。\n";
+        } else {
+            prompt += "あなたはグループトークの中で" + userId + "さんに話かけられました。\n";
+        }
+        prompt += userId + "さん: " + text + "\n";
+        prompt += "マイナン: ";
+
+        return prompt;
     };
 
 }

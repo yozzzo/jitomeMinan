@@ -2,8 +2,7 @@
 export class Env {
     // デバッグモードかどうか
     static get IS_DEBUG() {
-        // Env.callProperty("IS_DEBUG");
-        // return false;
-        return true;
+        // true or false;
+        return false;
     }
 }

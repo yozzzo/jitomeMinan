@@ -1,29 +1,56 @@
 // chatGPTのAPIを叩くクラス
 import { Constant } from "./Constant";
-
 export class Gpt {
-    apiKey: string | null;
+    apiKey: string;
     url: string;
-    
+    model: string;
+    temperature: number;
+    maxTokens: number;
+
     constructor() {
-        this.url = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk";
-        // apiKeyを取得する
         const constant = new Constant();
         this.apiKey = constant.GPT_API_KEY;
+        this.model = constant.GPT_MODEL;
+        this.temperature = constant.GPT_TEMPERATURE;
+        this.url = constant.GPT_URL;
+        this.maxTokens = constant.MAX_TOKENS;
     }
-    
-    async getResponse(message: string) {
-        const response = await UrlFetchApp.fetch(this.url, {
-        headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-        },
-        method: "post",
-        payload: JSON.stringify({
-            apikey: this.apiKey,
-            query: message,
-        }),
-        });
-        const json = JSON.parse(response.getContentText());
-        return json.results[0].reply;
+
+    getReply(content: string, callback: (reply: string) => void) {
+        console.log("getReply");
+        const requestBody = {
+            "model": this.model,
+            "messages": [{ 'role': 'user', 'content': content }],
+            "temperature": this.temperature,
+            "max_tokens": this.maxTokens,
+        };
+        console.log(requestBody);
+
+        const requestOptions: any = {
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.apiKey
+            },
+            "payload": JSON.stringify(requestBody)
+        };
+
+        try {
+            console.log("try");
+
+            const response = UrlFetchApp.fetch(this.url, requestOptions);
+            console.log("1");
+            console.log(response);
+
+            const jsonResponse = JSON.parse(response.getContentText());
+            console.log("2");
+            console.log(jsonResponse);
+
+            const reply = jsonResponse.choices[0].message.content.trim();
+            callback(reply);
+        } catch (error) {
+            console.log("error: " + error);
+            callback("ちょっと問題発生ナン。。\nごめんねナン");
+        }
     }
 }

@@ -1,7 +1,9 @@
 import {Main} from '../Main';
 import {Line} from '../Line';
+import {Constant} from '../Constant';
 const line = new Line();
-const main = new Main(line);
+const constant = new Constant();
+const main = new Main(line, constant);
   
   describe("createImgUrl", () => {
     it("should return an image URL based on replyType", () => {
