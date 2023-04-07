@@ -14,3 +14,12 @@ const endOfWeeklyRemind = () => {
 
   main.endOfWeeklyRemind();
 };
+
+const doPost=(e: any) => {
+  console.log("fooks成功")
+  console.log(e)
+  const line = new Line();
+  const main = new Main(line);
+
+  main.doPost(e, line);
+}

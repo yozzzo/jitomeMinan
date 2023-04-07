@@ -89,7 +89,6 @@ export class Main {
         return message;
     };
 
-
     dateFormat = (date: Date): string => {
         const dateString = Utilities.formatDate(date, "JST", "yyyy-MM-dd");
         return dateString;
@@ -100,13 +99,6 @@ export class Main {
         let postAuthor = "";
         jsonData.schedules.forEach((item: Schedules) => {
             if (item.postDay === targetDate) {                
-                console.log("見つかった")
-                // Constant.authorOrderの中のindexがitem.postAuthorの値を取得する。
-                console.log(this.constant.AUTHOR_ORDER)
-                console.log(this.constant.AUTHOR_ORDER[0])
-                console.log(item.postAuthor)
-                console.log(this.constant.AUTHOR_ORDER[item.postAuthor])
-                // ループから抜ける
                 postAuthor = this.constant.AUTHOR_ORDER[item.postAuthor]
             }
         });
@@ -180,7 +172,7 @@ export class Main {
         return msg;
     };
 
-    doPost = (e: any) => {
+    doPost = (e: any, line: Line) => {
         // WebHookで受信した応答用Token
         const replyToken = JSON.parse(e.postData.contents).events[0].replyToken;
         const type = JSON.parse(e.postData.contents).events[0].type;

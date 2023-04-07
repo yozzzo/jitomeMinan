@@ -1,12 +1,15 @@
 // chatGPTのAPIを叩くクラス
+import { Constant } from "./Constant";
 
-class GPT {
+export class Gpt {
     apiKey: string | null;
     url: string;
     
     constructor() {
         this.url = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk";
-        this.apiKey = PropertiesService.getScriptProperties().getProperty("GPT_API_KEY");
+        // apiKeyを取得する
+        const constant = new Constant();
+        this.apiKey = constant.GPT_API_KEY;
     }
     
     async getResponse(message: string) {
