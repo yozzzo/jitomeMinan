@@ -2,6 +2,7 @@ import { Constant } from "./Constant";
 import { Gpt } from "./Gpt";
 import { Line } from "./Line";
 import { Schedule } from "./Schedule";
+import { User } from "./User";
 
 type QuickReplyMessage = {
     type: string;
@@ -51,10 +52,12 @@ type JsonSchedule = {
 export class Main {
     line: Line;
     constant: Constant;
+    user: User;
 
-    constructor(line: Line, constant: Constant) {
+    constructor(line: Line, constant: Constant, user: User) {
         this.line = line;
         this.constant = constant;
+        this.user = user;
     }
 
     createQuickReplyMsg = (postAuthor: string): QuickReplyMessage[] => {
@@ -195,13 +198,11 @@ export class Main {
         const day_num = target_date.getDay();
         const sunday = date - day_num;
         return this.dateFormat(new Date(year, month, sunday + 1));
-    }
+    };
 
     format_date = (date: Date) => {
         return Utilities.formatDate(date, "Asia/Tokyo", "MM/dd");
-    }
-
-
+    };
 
     beginningWeeklyRemind = () => {
         const mondayDate: string = this.getMondayDateInThisWeek();
@@ -245,16 +246,18 @@ export class Main {
     };
 
     getMinanPrompt = (groupId: string | null, userId: string, text: string) => {
+        const userName = this.user.getUserName(userId)
+        
         let prompt = "";
         prompt += "あなたは皮肉屋だけど何故か憎めないマイナンというキャラクターです。\n"
         prompt += "語尾には必ず「ナン」をつけてください。\n"
         prompt += "句点の後には2つの改行を含めて二行分のスペースがあるように見える文を作成してください。\n"
         if (groupId == null) {
-            prompt += "あなたは" + userId + "さんと会話しています。\n";
+            prompt += "あなたは" + userName + "さんと会話しています。\n";
         } else {
-            prompt += "あなたはグループトークの中で" + userId + "さんに話かけられました。\n";
+            prompt += "あなたはグループトークの中で" + userName + "さんに話かけられました。\n";
         }
-        prompt += userId + "さん: " + text + "\n";
+        prompt += userName + "さん: " + text + "\n";
         prompt += "マイナン: ";
 
         return prompt;

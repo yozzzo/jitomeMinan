@@ -1,11 +1,13 @@
 import { Line } from "./Line";
 import { Main } from "./Main";
 import { Constant } from "./Constant";
+import { User } from "./User";
 
 const beginningWeeklyRemind = () => {
   const line = new Line();
   const constant = new Constant();
-  const main = new Main(line, constant);
+  const user = new User();
+  const main = new Main(line, constant,user);
 
   main.beginningWeeklyRemind();
 };
@@ -13,7 +15,9 @@ const beginningWeeklyRemind = () => {
 const endOfWeeklyRemind = () => {
   const line = new Line();
   const constant = new Constant();
-  const main = new Main(line, constant);
+  const user = new User();
+  const main = new Main(line, constant,user);
+  
 
   main.endOfWeeklyRemind();
 };
@@ -24,7 +28,8 @@ const doPost = (e: any) => {
   console.log("fooks成功")
   const line = new Line();
   const constant = new Constant();
-  const main = new Main(line, constant);
+  const user = new User();
+  const main = new Main(line, constant, user);
 
 
   const groupId: string | null = JSON.parse(e.postData.contents).events[0].source.groupId ?? null;
@@ -47,6 +52,12 @@ const doPost = (e: any) => {
     if (isNotForMinan(text)) {
       console.log("このbot宛ではありません。")
       throw new Error("このbot宛のメッセージではありません");
+    }
+
+    // もしtextに私の名前はが含まれていたら、setUserNameを実行する
+    if (text.includes("私の名前は")) {
+      // user.setUsername(text);
+      return;
     }
     main.talkToMinan(groupId, userId, text, replyToken);
   } else {
